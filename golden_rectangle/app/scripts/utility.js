@@ -1,6 +1,9 @@
 define(['d3'], 
 function (d3) {
 	var utility = {
+		// Constants
+		PHI: 1.61803398875,
+		
 		identity: function (a) { return a },
 		degToRad: function (deg) { return deg * Math.PI / 180  },
 		getOriginPoint: function (svgElement) {
@@ -14,7 +17,9 @@ function (d3) {
 		},
 		px: function (d) { return d + 'px' },
 		translate: function (x, y) { return 'translate(' + x + ',' + y + ')' },
-		rotateDeg: function (deg) { return 'rotate(' + deg + ')' }
+		rotateDeg: function (deg, x, y) { 
+			var origin = typeof x != 'undefined' ? ' ' + x + ' ' + y : '';
+			return 'rotate(' + deg + origin + ')' }
 	}
 
 	return utility;

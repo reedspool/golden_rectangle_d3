@@ -1,34 +1,31 @@
 define(['d3', 'utility'], 
 function (d3, utility) {
 
+
+	var φ = utility.PHI;
+
 	function chartFactory() {
-		var maxDepth = 5
+		var maxDepth = 40
 		var depth = 0;
 		// svg is <svg></svg> or <svg:g></svg:g>
-		function chart(svgEl) {
+
+		// Expecting a g prepared as above, not an svg
+		function chart(svg) {
 			// Don't wanna get too deep...
 			if (depth++ > maxDepth) return;
 
 			// Save me... so we can track depth here
 			var calleeChart = arguments.callee;
 
-			// Draw a square inside this box, then make a g
-			svg = d3.select(svgEl)
-
-			var φ = 1.618;
-
-			var base = svg.height(),
-				width = svg.width()
+			var height = svg.style('height'),
+				base = height == 'auto' ? svg.attr('height') : parseInt(height)
 			
 			// d3 component(s)
 			// WARNING: FILLED WITH MATH!
 			var arc = d3.svg.arc()
-			    .innerRadius(function (d, i) {
-			    	// Arbitrary: for style
-			    	return d / 3;
-			    })
 			    // Use the squares side length for radius
-			    .outerRadius(utility.identity)
+			    // Same room for jesus and the stroke width;
+			    .outerRadius(function (base, i) { return base - 0.25 })
 			    .startAngle(utility.degToRad(270))
 			    .endAngle(utility.degToRad(360))
 
@@ -37,11 +34,9 @@ function (d3, utility) {
 
 			// A square, 
 			svg.append('svg:rect')
+				.classed('square', true)
 		  		.attr('width', utility.px)
 		  		.attr('height', utility.px)
-		  		.attr("transform", function (base) { 
-			    	return utility.translate(base, base)
-			    })
 
 			// And an arc
 			svg.append("svg:path")
@@ -52,13 +47,15 @@ function (d3, utility) {
 			    })
 
 			svg.append('svg:g')
-				.attr('height', px)
+				.classed('sub-rectangle', true)
+				.attr('width', utility.px)
 				// Apply the scale
-				.attr('width', function (base, i) { return base + base * φ; })
+				.attr('height', function (base, i) { return base * φ - base })
 				.attr("transform", function (base) { 
-			    	return utility.translate(0, base)
+			    	return utility.rotateDeg(90, base/2, base/2) + ' ' + utility.translate(0, -base / φ )
 			    })
-
+			    // Finally, the recursive magic!
+			    .call(calleeChart)
 		}
 
 

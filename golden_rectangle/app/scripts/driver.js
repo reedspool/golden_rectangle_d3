@@ -1,6 +1,6 @@
 /* Driver.js: Run our web app! */
-define(['d3', 'jquery', 'lodash', 'jquery.eventAggregator', 'knockout', 'utility'],
-  function(d3, $, _, eventAggregator, ko, utility) {
+define(['d3', 'jquery', 'lodash', 'jquery.eventAggregator', 'knockout', 'utility', 'recursive-golden-rectangle.d3'],
+  function(d3, $, _, eventAggregator, ko, utility, goldenRectangleChart) {
     
     // Golden ratio. Using φ cuz I just learned I can.
 	var φ = 1.618;
@@ -29,6 +29,7 @@ define(['d3', 'jquery', 'lodash', 'jquery.eventAggregator', 'knockout', 'utility
 
 		    	return utility.degToRad(deg)
 		     }),
+		chart = goldenRectangleChart(),
 	    rotateArc = function (base, i) { 
   			// WARNING: MATH!
   			var deg = i * 90 % 360 - 90;
@@ -46,37 +47,40 @@ define(['d3', 'jquery', 'lodash', 'jquery.eventAggregator', 'knockout', 'utility
 	});
 
 	// Assumption: svg.goldenRectangle exists in HTML
-  	var up = d3.select('.goldenRectangle')
-	  		.selectAll('.sub-rectangle')
+  	var svg = d3.select('.goldenRectangle'),
+  		up = svg.selectAll('.sub-rectangle')
 	  		.data(bases),
   		en = up.enter(),
   		ex = up.exit();
 
-  	var rectangleWrapper = en.append('svg:g')
-  		.classed('sub-rectangle', true)
+  		svg.call(chart);
+
+//TRYING OUT RECURSIVE D3 CHART VERSION
+ //  	var rectangleWrapper = en.append('svg:g')
+ //  		.classed('sub-rectangle', true)
 
 
 
 
-	// Now add a outer rectangle
-	rectangleWrapper.append('svg:rect')
-  		.attr('width', function (d) { return d + 'px' })
+	// // Now add a outer rectangle
+	// rectangleWrapper.append('svg:rect')
+ //  		.attr('width', function (d) { return d + 'px' })
 
-  		// Make the height the appropriate ratio
-  		.attr('height', function (base, i) {
-  			// WARNING: MATH!
-  			return (base + bases[i + 1]) + 'px'; // That wasn't that hard
-  		 })
-  		.attr("transform", function (base, i) { 
-  			return translateArc(base, i) + ' ' + rotateArc(base, i)
-  		 })
+ //  		// Make the height the appropriate ratio
+ //  		.attr('height', function (base, i) {
+ //  			// WARNING: MATH!
+ //  			return (base + bases[i + 1]) + 'px'; // That wasn't that hard
+ //  		 })
+ //  		.attr("transform", function (base, i) { 
+ //  			return translateArc(base, i) + ' ' + rotateArc(base, i)
+ //  		 })
 
 
-	// And an arc
-	rectangleWrapper.append("path")
-		.classed('arc', true)
-	    .attr("d", arc)
-	    .attr("transform", translateArc)
+	// // And an arc
+	// rectangleWrapper.append("path")
+	// 	.classed('arc', true)
+	//     .attr("d", arc)
+	//     .attr("transform", translateArc)
 
 
   }

@@ -1,20 +1,26 @@
 $icon-font-path: "/bower_components/bootstrap-sass-official/vendor/assets/fonts/bootstrap/";
 
-
+$goldenRatio : 1.61803398875;
+$base : 500;
+$width : $base * $goldenRatio;
 
 .goldenRectangle {
 
-    height: 800px;
-    width: 1000px;
+    height: $base + px;
+    width: $width + px;
 
     path.arc {
-        stroke-width: 0;
-        fill: #e3e3e3;
-        transform-origin: 0 0
+        stroke-width: 0.25;
+        fill: none;
+        stroke: black;
     }
 
-    .sub-rectangle rect {
-        stroke-width:1px;
+
+
+    .sub-rectangle rect.square, rect.square {
+        stroke-width: 0.25;
+        stroke: black;
+        fill: #e0e0ff;
     }
 }
 
