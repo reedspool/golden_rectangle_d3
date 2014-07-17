@@ -1,41 +1,57 @@
 define(['d3', 'utility'], 
 function (d3, utility) {
-
-
 	var φ = utility.PHI;
 
 	function chartFactory() {
-		var maxDepth = 40
-		var depth = 0;
-		// svg is <svg></svg> or <svg:g></svg:g>
+		var maxDepth = 40,
+			depth = 0,
 
-		// Expecting a g prepared as above, not an svg
+			// d3 component(s),
+			minusStrokeWidth = function (base, i) { return base - 1 },
+			arc = d3.svg.arc()
+			    // Use the squares side length for radius
+			    // Save room for jesus and the stroke width;
+				.innerRadius(minusStrokeWidth)
+			    .outerRadius(minusStrokeWidth)
+			    .startAngle(utility.degToRad(270))
+			    .endAngle(utility.degToRad(360));
+
+		// svg is <svg></svg> or <svg:g class="sub-rectangle"></svg:g>
 		function chart(svg) {
 			// Don't wanna get too deep...
-			if (depth++ > maxDepth) return;
+			if (depth + 1 > maxDepth) return;
 
-			// Save me... so we can track depth here
-			var calleeChart = arguments.callee;
+			depth++;
 
+			// If svg is the original svg, use the style height and width
+			// If svg is one of our composed g's, then its height and width are only available through attributes
+			// probably a better way to do this with data binding...
 			var height = svg.style('height'),
-				base = height == 'auto' ? svg.attr('height') : parseInt(height)
-			
-			// d3 component(s)
-			// WARNING: FILLED WITH MATH!
-			var arc = d3.svg.arc()
-			    // Use the squares side length for radius
-			    // Same room for jesus and the stroke width;
-			    .outerRadius(function (base, i) { return base - 0.25 })
-			    .startAngle(utility.degToRad(270))
-			    .endAngle(utility.degToRad(360))
+				width = svg.style('width'),
+				base = height == 'auto' ? svg.attr('height') : parseInt(height),
+				width = width == 'auto' ? svg.attr('width') : parseInt(width)
 
+			// Extracting the hard stuff
+			var mathy = {
+				nextBase: function (base, i) {
+					// ALL THE MATH!!!
+					return base * φ - base
+				},
+				nextTransform: function (base) {
+					// ALL THE MATH!!!
+			    	return utility.rotateDeg(90, base / 2, base / 2) +
+			    			 ' ' + 
+			    			 utility.translate(0, -base / φ )
+			    }
+			};
+			
 			// Give it data to work with
 			svg.datum(base)
 
 			// A square, 
 			svg.append('svg:rect')
 				.classed('square', true)
-		  		.attr('width', utility.px)
+		  		.attr('width', function () { return utility.px(width) })
 		  		.attr('height', utility.px)
 
 			// And an arc
@@ -48,17 +64,22 @@ function (d3, utility) {
 
 			svg.append('svg:g')
 				.classed('sub-rectangle', true)
-				.attr('width', utility.px)
+				.attr('width', utility.identity)
 				// Apply the scale
-				.attr('height', function (base, i) { return base * φ - base })
-				.attr("transform", function (base) { 
-			    	return utility.rotateDeg(90, base/2, base/2) + ' ' + utility.translate(0, -base / φ )
-			    })
+				.attr('height', mathy.nextBase)
+				.attr("transform", mathy.nextTransform)
 			    // Finally, the recursive magic!
-			    .call(calleeChart)
+			    .call(chart)
+
+		    // Now we are done, set depth back
+		    depth--;
 		}
 
-
+		chart.maxDepth = function(value) {
+			if (!arguments.length) return maxDepth;
+			maxDepth = value;
+			return chart;
+		};
 
 		return chart;
 	}
