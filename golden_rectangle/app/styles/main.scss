@@ -4,13 +4,12 @@ $goldenRatio : 1.61803398875;
 $base : 500;
 $width : $base * $goldenRatio;
 
-$smallBase: $base / $goldenRatio;
-$smallWidth: $smallBase * $goldenRatio;
 
 .goldenRectangle {
 
     height: $base + px;
     width: $width + px;
+    margin:30px;
 
     path.arc {
         stroke-width: 1;
@@ -25,12 +24,6 @@ $smallWidth: $smallBase * $goldenRatio;
         fill-opacity: 0;
     }
 }
-
-.goldenRectangle.small {
-    height: $smallBase + px;
-    width: $smallWidth + px;
-}
-
 
 
 

@@ -69,7 +69,7 @@ function (d3, utility) {
 				// Apply the scale
 				.attr('height', function (base) { return base / φ })
 				.attr("transform", function (base) { 
-					return utility.translate(0, base / φ / 2 )
+					return utility.translate(0, (base / φ) / φ )
 				})
 			    // Finally, the recursive magic!
 			    .call(chart)
