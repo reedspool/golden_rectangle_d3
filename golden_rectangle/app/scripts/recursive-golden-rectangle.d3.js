@@ -62,6 +62,18 @@ function (d3, utility) {
 			    	return utility.translate(base, base)
 			    })
 
+			// Trying to compose another, smaller one... not going great so far
+			svg.append('svg:g')
+				.classed('sub-rectangle', true)
+				.attr('width', utility.identity)
+				// Apply the scale
+				.attr('height', function (base) { return base / φ })
+				.attr("transform", function (base) { 
+					return utility.translate(0, 0)
+				})
+			    // Finally, the recursive magic!
+			    .call(chart)
+
 			svg.append('svg:g')
 				.classed('sub-rectangle', true)
 				.attr('width', utility.identity)

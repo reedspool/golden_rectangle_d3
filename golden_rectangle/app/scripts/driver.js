@@ -3,7 +3,7 @@ define(['d3', 'jquery', 'lodash', 'jquery.eventAggregator', 'knockout', 'utility
   function(d3, $, _, eventAggregator, ko, utility, goldenRectangleChart) {
     // d3 components
 	var chart = goldenRectangleChart()
-		.maxDepth(60);
+		.maxDepth(8);
 
 	// Assumption: svg.goldenRectangle exists in HTML
   	d3.select('.goldenRectangle').call(chart);
