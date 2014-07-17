@@ -6,6 +6,9 @@ function (d3, utility) {
 		var maxDepth = 40,
 			depth = 0,
 
+			// Should we present the "mini" chart?
+			mini = false,
+
 			// d3 component(s),
 			minusStrokeWidth = function (base, i) { return base - 1 },
 			arc = d3.svg.arc()
@@ -42,7 +45,11 @@ function (d3, utility) {
 			    	return utility.rotateDeg(90, base / 2, base / 2) +
 			    			 ' ' + 
 			    			 utility.translate(0, -base / φ )
-			    }
+			    },
+			    miniHeight: function (base) { return base / φ },
+			    miniTranslate: function (base) { 
+			    	var d = mathy.miniHeight;
+			    	return utility.translate(0, d(d(base))) }
 			};
 			
 			// Give it data to work with
@@ -62,17 +69,17 @@ function (d3, utility) {
 			    	return utility.translate(base, base)
 			    })
 
-			// Trying to compose another, smaller one... not going great so far
-			svg.append('svg:g')
-				.classed('sub-rectangle', true)
-				.attr('width', utility.identity)
-				// Apply the scale
-				.attr('height', function (base) { return base / φ })
-				.attr("transform", function (base) { 
-					return utility.translate(0, (base / φ) / φ )
-				})
-			    // Finally, the recursive magic!
-			    .call(chart)
+			if (mini) {
+				// If requested, also draw a second mini-me for each chart
+				svg.append('svg:g')
+					.classed('sub-rectangle', true)
+					.attr('width', utility.identity)
+					// Apply the scale
+					.attr('height', mathy.miniHeight)
+					.attr("transform", mathy.miniTranslate)
+				    // Finally, the recursive magic!
+				    .call(chart)
+			}
 
 			svg.append('svg:g')
 				.classed('sub-rectangle', true)
@@ -92,6 +99,12 @@ function (d3, utility) {
 			maxDepth = value;
 			return chart;
 		};
+
+		chart.mini = function(value) {
+			if (!arguments.length) return mini;
+			mini = value;
+			return chart;
+		};	
 
 		return chart;
 	}
