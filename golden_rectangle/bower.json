@@ -1,0 +1,15 @@
+{
+  "name": "webapp-all",
+  "private": true,
+  "dependencies": {
+    "bootstrap-sass-official": "~3.1.0",
+    "modernizr": "~2.6.2",
+    "jquery": "~1.11.0",
+    "d3": "~3.4.8",
+    "knockout": "~3.1.0",
+    "lodash": "~2.4.1",
+    "jqueryeventaggregator": "https://github.com/reedspool/jquery-event-aggregator.git",
+    "crossfilter": "~1.3.7"
+  },
+  "devDependencies": {}
+}

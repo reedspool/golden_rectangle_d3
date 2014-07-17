@@ -1,0 +1,229 @@
+<html>
+  <!--
+  Copyright (C) 2012 David Xia
+
+  Permission is hereby granted, free of charge, to any person obtaining a copy
+  of this software and associated documentation files (the "Software"), to deal
+  in the Software without restriction, including without limitation the rights
+  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+  copies of the Software, and to permit persons to whom the Software is
+  furnished to do so, subject to the following conditions:
+
+  The above copyright notice and this permission notice shall be included in
+  all copies or substantial portions of the Software.
+
+  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+  -->
+  <head>
+    <title>Golden Ratio Fun</title>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>
+
+    <script type="text/javascript">
+        function loadCanvas(){
+            var TOTAL_RECTANGLES = 400;
+
+            // get available screen size
+            var availWidth = $(window).width() - 20;
+            var availHeight = $(window).height() - 20;
+
+            // instantiate golden ratio constant
+            var PHI = (1+ Math.sqrt(5))/2;
+
+            //Other helpful stuff
+            var PI = Math.PI;
+            var HalfPI = 0.5 * PI;
+            var ThreeHalvesPI = 3 * HalfPI;
+
+            // resize canvas based on golden ratio
+            if(availWidth/availHeight > PHI){
+                availWidth = availHeight * PHI;
+            } else if(availWidth/availHeight < PHI){
+                availHeight = availWidth/PHI;
+            }
+
+            // add canvas HTML tag to body
+            var canvasTag = '<canvas id="canvas" width="'+availWidth+'" height="'+availHeight+'"></canvas>';
+            $('body').html(canvasTag);
+
+            // prepare to draw
+            var canvas = $('canvas').get(0);
+            if(canvas.getContext){
+                var ctx = canvas.getContext('2d');
+            }
+
+
+            var y = [],
+                x = [];
+
+            x[0] = availWidth/PHI;
+            x[1] = availWidth - (availWidth-x[0])/PHI;
+            y[0] = availHeight/PHI;
+            y[1] = availHeight - (availHeight-y[0])/PHI;
+
+            function fillWithStuff(array) {
+                for (var i = 2; i < TOTAL_RECTANGLES; i++) {
+                    var div2 = i % 2 == 0,
+                        lastEven = array[ div2 ? i - 2 : i - 1],
+                        lastOdd = array[ div2 ? i - 1: i - 2]
+                        twoAgo = array[i - 2],
+                        sign = div2 ? 1 : -1;
+
+                    array[i] = twoAgo + sign * ( lastOdd - lastEven ) / PHI;
+                }
+            }
+
+            fillWithStuff(x);
+            fillWithStuff(y);
+        
+
+            // draw first inner golden rectangle
+            ctx.beginPath();
+            ctx.moveTo(x[0], 0);
+            ctx.lineTo(x[0], availHeight);
+            ctx.stroke();
+
+            // draw arc 1
+            ctx.beginPath();
+            ctx.moveTo(x[0], availHeight);
+            ctx.arc(x[0], availHeight, x[0], PI, ThreeHalvesPI);
+            ctx.stroke();
+
+            // draw second inner rectangle
+            ctx.beginPath();
+            ctx.moveTo(x[0], y[0]);
+            ctx.lineTo(availWidth, y[0]);
+            ctx.stroke();
+
+            // draw arc 2
+            ctx.beginPath();
+            ctx.moveTo(x[0], y[0]);
+            ctx.arc(x[0], y[0], y[0], ThreeHalvesPI, 0);
+            ctx.stroke();
+
+            // draw 3rd
+            ctx.beginPath();
+            ctx.moveTo(x[1], y[0]);
+            ctx.lineTo(x[1], availHeight);
+            ctx.stroke();
+
+            // draw arc 3
+            ctx.beginPath();
+            ctx.moveTo(availWidth, y[0]);
+            ctx.arc(x[1], y[0], (availHeight-y[0]), 0, (HalfPI));
+            ctx.stroke();
+
+            // // draw 4th
+            // ctx.beginPath();
+            // ctx.moveTo(x[0], y[1]);
+            // ctx.lineTo(x[1], y[1]);
+            // ctx.stroke();
+            for (var i = 4; i < TOTAL_RECTANGLES * 2; i++) {
+                drawNumber(i);
+            }
+
+            // draw arc 4
+            ctx.beginPath();
+            ctx.moveTo(x[1], y[1]);
+            ctx.arc(x[1], y[1], (availHeight-y[1]), (HalfPI), PI);
+            ctx.stroke();
+
+
+            // draw arc 5
+            ctx.beginPath();
+            ctx.moveTo(x[2], y[1]);
+            ctx.arc(x[2], y[1], (x[2]-x[0]), PI, ThreeHalvesPI);
+            ctx.stroke();
+
+            // draw arc
+            ctx.beginPath();
+            ctx.moveTo(x[2], y[2]);
+            ctx.arc(x[2], y[2], (x[1]-x[2]), ThreeHalvesPI, 0);
+            ctx.stroke();
+
+            // draw arc
+            ctx.beginPath();
+            ctx.moveTo(x[3], y[2]);
+            ctx.arc(x[3], y[2], (x[1]-x[3]), 0, (HalfPI));
+            ctx.stroke();
+
+
+            // draw arc
+            ctx.beginPath();
+            ctx.moveTo(x[3], y[3]);
+            ctx.arc(x[3], y[3], (x[3]-x[2]), (HalfPI), PI);
+            ctx.stroke();
+
+
+            // draw arc
+            ctx.beginPath();
+            ctx.moveTo(x[4], y[3]);
+            ctx.arc(x[4], y[3], (x[4]-x[2]), PI, ThreeHalvesPI);
+            ctx.stroke();
+
+            // draw arc
+            ctx.beginPath();
+            ctx.moveTo(x[4], y[4]);
+            ctx.arc(x[4], y[4], (x[3]-x[4]), ThreeHalvesPI, 0);
+            ctx.stroke();
+
+            // draw arc
+            ctx.beginPath();
+            ctx.moveTo(x[5], y[4]);
+            ctx.arc(x[5], y[4], (x[3]-x[5]), 0, (HalfPI));
+            ctx.stroke();
+            
+            // draw arc
+            ctx.beginPath();
+            ctx.moveTo(x[5], y[5]);
+            ctx.arc(x[5], y[5], (x[5]-x[4]), (HalfPI), PI);
+            ctx.stroke();
+
+            function drawArc(i) {
+                var div2 = i % 2 == 0,
+                    half = Math.floor(i / 2),
+                    theta0 = HalfPI * ((i % 4) + 1),
+                    theta1 = theta0 + HalfPI,
+                    x0 = 
+                    x1 =; 
+                // draw arc
+                ctx.beginPath();
+                ctx.moveTo(x[5], y[5]);
+                ctx.arc(x[5], y[5], (x[5]-x[4]), theta0, theta1);
+                ctx.stroke();
+            }
+
+            function drawNumber(i) {
+                var div2 = i % 2 == 0,
+                    half = Math.floor(i / 2),
+                    x0 = half - (div2 ? 2 : 0),
+                    x1 = half - (div2 ? 1 : 0),
+                    y0 = half - (div2 ? 1 : 2),
+                    y1 = half - (div2 ? 1 : 1);
+
+                ctx.beginPath();
+                ctx.moveTo(x[x0], y[y0]);
+                ctx.lineTo(x[x1], y[y1]);
+                ctx.stroke();
+            }
+
+        }
+
+        // redraws golden rectangles if window is resized
+        $(window).resize(function() {
+            loadCanvas();
+        });
+    </script>
+    <style type="text/css">
+      canvas { border: 2px solid black; }
+    </style>
+</head>
+
+
+<body onload="loadCanvas()">
+</body>
+</html>
