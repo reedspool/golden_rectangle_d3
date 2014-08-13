@@ -19,9 +19,15 @@ $width : $base * $goldenRatio;
 
     .sub-rectangle rect.square, rect.square {
         stroke-width: 0;
-        stroke: #b3b3b3;
+        //stroke: #b3b3b3;
+        stroke: black;
         fill: #e3e3e3;
         fill-opacity: 0;
+    }
+
+    .sub-rectangle rect.square.show, rect.square.show {
+        // fill-opacity: 1;
+        stroke-width: 1;
     }
 }
 

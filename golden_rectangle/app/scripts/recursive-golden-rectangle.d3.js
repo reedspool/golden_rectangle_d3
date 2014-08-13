@@ -3,11 +3,12 @@ function (d3, utility) {
 	var φ = utility.PHI;
 
 	function chartFactory() {
-		var maxDepth = 40,
+		var maxDepth = 10,
 			depth = 0,
 
 			// Should we present the "mini" chart?
 			mini = false,
+			showRectangles = false,
 
 			// d3 component(s),
 			minusStrokeWidth = function (base, i) { return base - 1 },
@@ -46,8 +47,12 @@ function (d3, utility) {
 			    			 ' ' + 
 			    			 utility.translate(0, -base / φ )
 			    },
-			    miniHeight: function (base) { return base / φ },
+			    miniHeight: function (base) { 
+			    	// ALL THE MATH!!!
+			    	return base / φ 
+			    },
 			    miniTranslate: function (base) { 
+			    	// ALL THE MATH!!!
 			    	var d = mathy.miniHeight;
 			    	return utility.translate(0, d(d(base))) }
 			};
@@ -58,6 +63,7 @@ function (d3, utility) {
 			// A square, 
 			svg.append('svg:rect')
 				.classed('square', true)
+				.classed('show', function () { return showRectangles  })
 		  		.attr('width', function () { return utility.px(width) })
 		  		.attr('height', utility.px)
 
@@ -104,7 +110,13 @@ function (d3, utility) {
 			if (!arguments.length) return mini;
 			mini = value;
 			return chart;
-		};	
+		};
+
+		chart.showRectangles = function(value) {
+				if (!arguments.length) return showRectangles;
+				showRectangles = value;
+				return chart;
+			};	
 
 		return chart;
 	}
