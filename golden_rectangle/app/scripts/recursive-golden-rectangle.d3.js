@@ -1,3 +1,7 @@
+/**
+ * See a working version at http://reedspool.github.io/2014/09/06/golden-rectangle-d3.html
+ */
+
 define(['d3', 'utility'], 
 function (d3, utility) {
 	var φ = utility.PHI;

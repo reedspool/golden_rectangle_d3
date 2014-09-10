@@ -2,6 +2,8 @@
 
 A rendering of the [Golden Spiral](http://en.wikipedia.org/wiki/Golden_spiral) using d3.js
 
+See [a live demo](http://reedspool.github.io/2014/09/06/golden-rectangle-d3.html)
+
 The chart is defined with mbostocks recommended [chart template](http://bost.ocks.org/mike/chart/), with the interesting twist that it is (sometimes doubly) recursive.
 
 ### Example useage:
